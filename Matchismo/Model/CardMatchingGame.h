@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "Card.h"
 #import "Deck.h"
+#import "PlayingCard.h"
 
 @interface CardMatchingGame : NSObject
 
 //Don't know how many cards we're going to use so can't use straight init
 //designated initializer (must use comment, cannot convey any other way), other type of initializer is convenience intializer
 - (id)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck;
+
 
 - (void)flipCardAtIndex:(NSUInteger)index;
 

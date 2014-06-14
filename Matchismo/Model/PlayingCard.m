@@ -10,24 +10,40 @@
 
 @implementation PlayingCard
 
+#define MATCH_2_SUITS 1
+#define MATCH_3_SUITS 3
+#define MATCH_2_RANK 2
+#define MATCH_3_RANK 6
+
 - (int)match:(NSArray *)otherCards
 {
     int score = 0;
-    
     if ( [otherCards count] == 1){//lastObject never gives you out of bounds, returns nil if array empty
         PlayingCard *otherCard = [otherCards lastObject];
+        NSLog(@"2 cards: (1) %@, (2) %@", self.contents, otherCard.contents);
         if ([otherCard.suit isEqualToString:self.suit]){
-            score = 1;
+            score = MATCH_2_SUITS*2;
         } else if (otherCard.rank == self.rank) {
-            score = 4;
+            score = MATCH_2_RANK*2;
         }
     }
+    
     if ( [otherCards count] == 2){//need to figure out how to change card number
-        PlayingCard *otherCard = [otherCards lastObject];
-        if ([otherCard.suit isEqualToString:self.suit]){
-            score = 1;
-        } else if (otherCard.rank == self.rank) {
-            score = 4;
+        PlayingCard *secondCard = [otherCards objectAtIndex:0];
+        PlayingCard *thirdCard = [otherCards objectAtIndex:1];
+        NSLog(@"3 cards: (1) %@, (2) %@, (3) %@", self.contents, secondCard.contents, thirdCard.contents);
+        if ([secondCard.suit isEqualToString:self.suit] || [thirdCard.suit isEqualToString:self.suit] || [secondCard.suit isEqualToString:thirdCard.suit]){
+            score = MATCH_2_SUITS;
+            NSLog(@"MATCH_2_SUITS");
+        } else if ([secondCard.suit isEqualToString:self.suit] && [thirdCard.suit isEqualToString:self.suit]) {
+            score = MATCH_3_SUITS;
+            NSLog(@"MATCH_3_SUITS");
+        } else if (secondCard.rank == self.rank || thirdCard.rank == self.rank || secondCard.rank == thirdCard.rank){
+            score = MATCH_2_RANK;
+            NSLog(@"MATCH_2_RANK");
+        } else if ( secondCard.rank == self.rank && thirdCard.rank == self.rank) {
+            score = MATCH_3_RANK;
+            NSLog(@"MATCH_3_RANK");
         }
     }
     return score;

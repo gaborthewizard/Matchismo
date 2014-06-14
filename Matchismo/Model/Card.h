@@ -24,6 +24,8 @@
 
 //We can customize getter names at declaration as shown below
 @property (nonatomic, getter = isFaceUP) BOOL faceUp;
+
+//is true if the card has been played, otherwise false
 @property (nonatomic, getter = isUnplayable) BOOL unplayable;
 
 //Methods start with a dash or a plus in objective-c
