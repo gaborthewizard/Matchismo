@@ -31,9 +31,9 @@
 
 - (void)flipCardAtIndex:(NSUInteger)index
 {
-    Card *card = [self cardAtIndex:index]; //sets the card to the one that was picked
-    if (card && !card.isUnplayable) { //checks that we picked a card and it is in play
-        if (!card.faceUp) { //makes sure the card wasn't already face up?
+    Card *card = [self cardAtIndex:index];
+    if (card && !card.isUnplayable) {
+        if (!card.faceUp) {
             for (Card *otherCard in self.cards){
                 if (otherCard.isFaceUP && !otherCard.isUnplayable){
                     int matchScore = [card match:@[otherCard]];
@@ -63,27 +63,21 @@
     }
 }
 
-//---------------------------------------------------------//
 //Assignment #1
-//*****LEFT OFF HERE, WAS TRYING TO FIGURE OUT HOW TO PROPERLY STORE ALL THREE CARDS THEN RUN MATCH ON IT*****//
 //This function is called whenever a card is flipped
 - (void)flipCardAtIndex3:(NSUInteger)index
 {
     Card *card = [self cardAtIndex:index];
+    _results = [[NSMutableString alloc] initWithFormat:@"Flippd up %@",card.contents];
     if (card && !card.isUnplayable){
         if (!card.faceUp){
-            NSLog(@"card1: %@",card.contents);
-            //---------------------------------------------------------------------------------
-            //check for second card that (1) isn't the first card (2) is flipped (3) is in play
             for (Card *secondCard in self.cards){
                     if (secondCard.isFaceUP && !secondCard.isUnplayable){
-            //---------------------------------------------------------------------------------
-                        secondCard.unplayable = YES;
-                        NSLog(@"card2: %@",secondCard.contents);
                         for (Card *thirdCard in self.cards){
-                            if (thirdCard.isFaceUP && !thirdCard.isUnplayable){
-                                NSLog(@"card3: %@",thirdCard.contents);
-                                NSLog(@"card1: %@, card2: %@, card3: %@",card.contents,secondCard.contents,thirdCard.contents);
+                            if (thirdCard == secondCard) {
+                                break;
+                            }
+                                if (thirdCard.isFaceUP && !thirdCard.isUnplayable){
                                 int matchScore = [card match:@[secondCard,thirdCard]];
                                 if (matchScore){
                                     PlayingCard *card1 = card;
@@ -91,51 +85,75 @@
                                     PlayingCard *card3 = thirdCard;
                                     switch (matchScore) {
                                         case 1:
-                                            NSLog(@"CASE 1");
-                                            card.unplayable = YES;
-                                            secondCard.unplayable = YES;
-                                            thirdCard.unplayable = YES;
+                                            NSLog(@"+%i points",MATCH_BONUS*matchScore);
+                                            if (card1.suit == card2.suit){
+                                                card.unplayable = YES;
+                                                secondCard.unplayable = YES;
+                                                thirdCard.faceUp = NO;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",card.contents,secondCard.contents,MATCH_BONUS*matchScore];
+                                            } else if (card1.suit == card3.suit){
+                                                card.unplayable = YES;
+                                                secondCard.faceUp = NO;
+                                                thirdCard.unplayable = YES;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",card.contents,thirdCard.contents,MATCH_BONUS*matchScore];
+                                            } else {
+                                                card.faceUp = NO;
+                                                secondCard.unplayable = YES;
+                                                thirdCard.unplayable = YES;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",secondCard.contents,thirdCard.contents,MATCH_BONUS*matchScore];
+                                            }
                                             break;
                                         case 2:
-                                            NSLog(@"CASE 2");
-                                            card.unplayable = YES;
-                                            secondCard.unplayable = YES;
-                                            thirdCard.unplayable = YES;
+                                            NSLog(@"+%i points",MATCH_BONUS*matchScore);
+                                            if (card1.rank == card2.rank){
+                                                card.unplayable = YES;
+                                                secondCard.unplayable = YES;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",card.contents,secondCard.contents,MATCH_BONUS*matchScore];
+                                            } else if (card1.rank == card3.rank){
+                                                card.unplayable = YES;
+                                                thirdCard.unplayable = YES;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",card.contents,thirdCard.contents,MATCH_BONUS*matchScore];
+                                            } else {
+                                                secondCard.unplayable = YES;
+                                                thirdCard.unplayable = YES;
+                                                _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ for %i points!",secondCard.contents,thirdCard.contents,MATCH_BONUS*matchScore];
+                                            }
                                             break;
                                         case 3:
+                                            NSLog(@"+%i points",MATCH_BONUS*matchScore);
                                             card.unplayable = YES;
                                             secondCard.unplayable = YES;
                                             thirdCard.unplayable = YES;
+                                            _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ & %@ for %i points!",card.contents,secondCard.contents,thirdCard.contents, MATCH_BONUS*matchScore];
                                             break;
                                         case 6:
+                                            NSLog(@"+%i points",MATCH_BONUS*matchScore);
                                             card.unplayable = YES;
                                             secondCard.unplayable = YES;
                                             thirdCard.unplayable = YES;
+                                            _results = [[NSMutableString alloc] initWithFormat:@"Matched %@ & %@ & %@ for %i points!",card.contents,secondCard.contents,thirdCard.contents, MATCH_BONUS*matchScore];
                                             break;
                                             
                                         default:
                                             break;
                                     }
-                                    
                                     self.score += matchScore * MATCH_BONUS;
                                 } else {
-                                    NSLog(@"MISMATCH_PENALTY");
+                                    NSLog(@"-%i points: NO MATCH",MISMATCH_PENALTY*2);
+                                    _results = [[NSMutableString alloc] initWithFormat:@"%@ & %@ & %@ don't match! %i point penalty!",card.contents,secondCard.contents,thirdCard.contents, MISMATCH_PENALTY];
                                     secondCard.faceUp = NO;
                                     thirdCard.faceUp = NO;
-                                    self.score -= MISMATCH_PENALTY;
+                                    self.score -= MISMATCH_PENALTY*2;
                                 }
                                 break;
-                            }
+                                }
                         }
                     }
-            _results = [[NSMutableString alloc] initWithFormat:@"Flippd up %@",card.contents];
             }
         }
-        NSLog(@"self.score -= FLIP_COST;");
         card.faceUp = !card.isFaceUP;//Flips card over
     }
 }
-//---------------------------------------------------------//
     
 //returns the index of the card in the array inwhich the cards are stored
 - (Card *)cardAtIndex:(NSUInteger)index

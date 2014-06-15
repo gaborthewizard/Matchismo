@@ -6,15 +6,6 @@
 //  Copyright (c) 2014 Gabor. All rights reserved.
 //
 
-/*
- 3. Add a text label somewhere which describes the results of the last flip.
- Examples:
-    "Matched J(heart) and J(spade) for 4 points."
-    "6(diamond) and J(clubs) don't match! 2 point penalty!"
-    "Flipped up 8(diamond)" if no match.
- 4. Add a button called Deal...
- */
-
 #import "ViewController.h"
 #import "PlayingCardDeck.h"
 #import "CardMatchingGame.h"
@@ -77,12 +68,10 @@
     if( _segmentController.selectedSegmentIndex == 1) {[_segmentController setEnabled:NO forSegmentAtIndex:0];}
     
     if( _segmentController.selectedSegmentIndex == 0) {
-        NSLog(@"2-card");
         [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
         self.flipCount++;
     }
     if( _segmentController.selectedSegmentIndex == 1) {
-        NSLog(@"3-card");
         [self.game flipCardAtIndex3:[self.cardButtons indexOfObject:sender]];
         self.flipCount++;
     }
